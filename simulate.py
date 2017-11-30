@@ -24,9 +24,10 @@ grating=mks.mk_wedged_mll(z_val=0,offset_x=cf.mll_offset)
 slits=mks.mk_slit()
 print("Done.")
 #------------------------------------------------------------------------
-wave0=mks.mk_plane_wave(theta=cf.theta)
+wave00=mks.mk_plane_wave(theta=cf.theta)
 #now introducing a slit
 stepslit=cf.slits_depth/cf.slits_steps
+wave0=wave00
 for i in range(0,cf.slits_steps,1):
     wave0=pr.split_operator(wave0,opt_const=slits,step_size=stepslit)
     print("Propagating through slit: %s/%s" %(i,cf.slits_steps))
@@ -45,7 +46,7 @@ if cf.save_intensity==True:
         intensity_plot=np.zeros((cf.size_intensity_arr[0],N_steps_grat))
     i2=0
     for i1 in range(N_steps_grat):
-        wave=pr.split_operator(wave,opt_const=grating)
+        wave=pr.split_operator(wave,opt_const=grating,step_size=cf.stepsize_z)
         if i1%modulo_img==0:
             wave_now=np.abs(wave)
             modulo_bin=ceil(wave_now.shape[0]/cf.size_intensity_arr[0])
@@ -70,9 +71,10 @@ else:
 #now freespace propagation
 N_slices_vac=cf.N_slices_ff
 wave3=wave
-modulo_img=int(N_steps_grat/cf.size_ff_arr[1])
+modulo_img=round(N_slices_vac/cf.size_ff_arr[1])
 if modulo_img==0:
     modulo_img=1
+print("modulo_img is %s"%modulo_img)
 if cf.size_ff_arr[1]<N_slices_vac:
     intensity_ff=np.zeros((cf.size_ff_arr[0],cf.size_ff_arr[1]))
 else:
@@ -105,3 +107,4 @@ print("")
 print("The nearfield propagation in the sample is saved as intensity_plot")
 print("The farfield propagation in the sample is saved as intensity_ff")
 print("Finished run.")
+print("modulo_img is %s"%modulo_img)

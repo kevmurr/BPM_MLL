@@ -52,9 +52,9 @@ def mk_grating(N_layers,period,N_px=cf.N_px,offset_x=0,pxsize=cf.pxsize):
     return(result_arr)
 def mk_plane_wave(N_px=cf.N_px,Amp=1,theta=0,wavelength=cf.wavelength,pxsize=cf.pxsize):
     #theta in rad
-    kx=2*np.pi/wavelength*np.sin(theta)
+    kx=np.sin(theta)/wavelength
     x_arr=np.linspace(0,N_px*pxsize,N_px)
-    phase=(kx*x_arr)%(2*np.pi)
+    phase=2*np.pi*kx*x_arr
     plane_wave=Amp*np.exp(1j*phase)
     return(plane_wave)
     
