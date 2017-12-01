@@ -2,109 +2,58 @@
 #"Influence of imperfections in a wedged MLL ..."
 #This is the main script to execute
 import config as cf
-import mk_sample as mks
-import propagators as pr
-import numpy as np
 import matplotlib.pyplot as plt
-from math import ceil
-#------------------------------
+import build_setup as bs
+#---------------------------------------------------------------------
+###################################
+#Making some samples
 print("Making the samples...")
-#make the incident wave
+#Making the samples
+if cf.mk_slit==True:
+    slits_pre_result=bs.b_slit()#make the slit sample
+    slits=slits_pre_result[0]
+    stepslit=slits_pre_result[1]
+#Making vacuum
+opt_const_vac=bs.b_vac()
+#Now making the mll if flat mll
+if cf. mll_type=="flat":
+    mll_pre_result=bs.b_mll()
+    grating=mll_pre_result[0]
+    N_steps_grat=mll_pre_result[1]
 
-#--------------------------------------------------------------------------
-#..........................................................................
-#samples
-opt_const_vac=mks.mk_bulk()
-N_steps_grat=int(cf.mll_depth/cf.stepsize_z)
-
-#N_steps_grat=int(cf.grating_depth/cf.stepsize_z)
-#grating=mks.mk_grating(N_layers=cf.grating_layers,period=cf.grating_period)
-#Insert MLL
-grating=mks.mk_wedged_mll(z_val=0,offset_x=cf.mll_offset)
-slits=mks.mk_slit()
-print("Done.")
 #------------------------------------------------------------------------
-wave00=mks.mk_plane_wave(theta=cf.theta)
-#now introducing a slit
-stepslit=cf.slits_depth/cf.slits_steps
+#####################################
+#THE PROPAGATION
+#####################################
+#INCIDENT WAVE
+print("Making incident wave")
+wave00=bs.mk_incident_wave()
+#--------------------------------------------------------------------------
+#SLIT
 wave0=wave00
-for i in range(0,cf.slits_steps,1):
-    wave0=pr.split_operator(wave0,opt_const=slits,step_size=stepslit)
-    print("Propagating through slit: %s/%s" %(i,cf.slits_steps))
-#propagate in free space 
-stepvac=cf.stepvac #stepsize of free space propagator in meters
-wave1=pr.split_operator(wave0,opt_const=opt_const_vac,step_size=stepvac)
+if cf.mk_slit==True:
+    wave1=bs.prop_slit(wave0,stepslit=stepslit,opt_const=slits) 
+else:
+    wave1=wave0
+#--------------------------------------------------------------------------
+#FREESPACE
+wave1=bs.prop_single(wave1,opt_const=opt_const_vac)
 #---------------------------------------------------------------------------
+#MLL
 wave=wave1
-if cf.save_intensity==True:
-    modulo_img=int(N_steps_grat/cf.size_intensity_arr[1])
-    if modulo_img==0:
-        modulo_img=1
-    if cf.size_intensity_arr[1]<N_steps_grat:
-        intensity_plot=np.zeros((cf.size_intensity_arr[0],cf.size_intensity_arr[1]))
-    else:
-        intensity_plot=np.zeros((cf.size_intensity_arr[0],N_steps_grat))
-    i2=0
-    for i1 in range(N_steps_grat):
-        wave=pr.split_operator(wave,opt_const=grating,step_size=cf.stepsize_z)
-        if i1%modulo_img==0:
-            wave_now=np.abs(wave)
-            modulo_bin=ceil(wave_now.shape[0]/cf.size_intensity_arr[0])
-            #now binning down
-            i3=0
-            wave_bin=np.zeros((cf.size_intensity_arr[0]))
-            for i in range(0,wave_now.shape[0],1):
-                if i%modulo_bin==0:
-                    wave_bin[i3]=wave_now[i]
-                    i3+=1   
-            intensity_plot[:,i2]=wave_bin
-            i2+=1
-        print("Sample slice %s of %s completed"%(i1,N_steps_grat))
-
-    
-else:
-    for i in range(N_steps_grat):
-        wave=pr.split_operator(wave,opt_const=grating)
-        print("iteration %s of %s completed"%(i,N_steps_grat))
-#............................................................................
+mll_prop_result=bs.prop_mll(wave,N_steps_grat=N_steps_grat,opt_const=grating)
+wave=mll_prop_result[0]
+intensity_in_mll=mll_prop_result[1]
 #---------------------------------------------------------------------------
-#now freespace propagation
-N_slices_vac=cf.N_slices_ff
-wave3=wave
-modulo_img=round(N_slices_vac/cf.size_ff_arr[1])
-if modulo_img==0:
-    modulo_img=1
-print("modulo_img is %s"%modulo_img)
-if cf.size_ff_arr[1]<N_slices_vac:
-    intensity_ff=np.zeros((cf.size_ff_arr[0],cf.size_ff_arr[1]))
-else:
-    intensity_ff=np.zeros((cf.size_ff_arr[1],N_slices_vac))
-i2=0
-for i in range(N_slices_vac):
-    wave3=pr.split_operator(wave3,opt_const=opt_const_vac,step_size=cf.slicevac)
-    if i%modulo_img==0:
-        wave_now=np.abs(wave3)
-        modulo_bin=ceil(wave_now.shape[0]/cf.size_ff_arr[0])
-        #now binning down
-        i3=0
-        wave_bin=np.zeros((cf.size_ff_arr[0]))
-        for i1 in range(0,wave_now.shape[0],1):
-            if i1%modulo_bin==0:
-                wave_bin[i3]=wave_now[i1]
-                i3+=1   
-        intensity_ff[:,i2]=wave_bin
-        i2+=1
-    print("Farfield slice %s of %s completed"%(i,N_slices_vac))
-size_obj=cf.N_px*cf.pxsize
-max_recom_zstep=size_obj**2/cf.wavelength
-#stepsize_vec=(cf.grating_depth/N_steps_grat,cf.mll_depth/N_steps_grat,cf.slits_depth/cf.slits_steps)
-#namestep_vec=["sample (grating)","sample (mll)","slit"]
-#maxstepsize_i=np.argmax(stepsize_vec)
-#maxstepsize=np.amax(stepsize_vec)
-#if maxstepsize>max_recom_zstep:
-#   print("WARNING: the chosen stepsize for %s might be too big! It should be smaller than %s."%(string(namestep_vec[maxstepsize_i]))))
+#FREESPACE
+freespace_prop_result=bs.prop_bulk(wave,opt_const=opt_const_vac)
+wave_end=freespace_prop_result[0]
+intensity_after_mll=freespace_prop_result[1]
 print("")
-print("The nearfield propagation in the sample is saved as intensity_plot")
-print("The farfield propagation in the sample is saved as intensity_ff")
+print("The incident wave is ""wave00""")
+print("Wave at entry of lens is ""wave1""")
+print("Wave at the exit pupil of lens is ""wave""")
+print("Wave at the end of simulation is ""wave_end""")
+print("The nearfield propagation in the sample is saved as ""intensity_in_mll""")
+print("The farfield propagation in the sample is saved as ""intensity_after_mll""")
 print("Finished run.")
-print("modulo_img is %s"%modulo_img)

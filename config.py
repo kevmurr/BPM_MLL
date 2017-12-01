@@ -3,13 +3,16 @@ import optical_constants as oc
 energy=17.3 #energy in kev
 wavelength=6.62*10**-34*2.99*10**8/(energy*1000*1.6022*10**-19)#wavelength in meters
 f=0.0025 #geometrical focal length in meters
-theta=-0.007001098235294117 #tilt of the incoming beam -0.0065
+scanmode="single" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
 
 #simulation parameters
 pxsize=0.2*10**-9 #px size in x direction in m
 stepsize_z=10*10**-9
 N_px=5*10**5
 #---------------------------------------------
+#Incident wave
+incident_type="plane"#shape of the incident wave (right now only plane wave supported. For this enter "plane")
+theta=-0.0065 #angle of the incident wave in rad 
 
 #---------------------------------------------
 #optical constants of multilayer materials
@@ -21,17 +24,14 @@ beta_2=oc.beta_Si_17_3
 
 #MLL
 #number of layers in MLL
+mll_type="flat" #choose "flat" or wedged
 n_begin=322 #first layer
 n_end=5822 #last layer
 mll_depth=6*10**-6
 mll_offset=0#0.0001-0.77*10**-5 #offset in meters
 #--------------------------
-#grating
-grating_period=10*10**-9
-grating_layers=500
-grating_depth=10*10**-6 #depth of grating
-#--------------------------
 #SLITS
+mk_slit=True #True if slit should be used
 slits_size=30*10**-6 #size in meters
 slits_depth=10*10**-6
 slit_offset=7.5*10**-6
@@ -41,16 +41,17 @@ slits_steps=100 #number of steps in slit
 #.............................................
 #Vacuum
 stepvac=1*10**-6#1 # distance if step is a single distance propagation
-N_slices_ff=2000 #farfield slices
-slicevac=0.25*10**-5 #distance of a single slice in vac if multiple slices are calculated
+N_slices_ff=500 #farfield slices
+slicevac=1*10**-5 #distance of a single slice in vac if multiple slices are calculated
 #---------------------
-#displaying optiosn
-#nf image
+#..................................................
+#######################################
+#SCANNING PARAMETERS. please jump to the respective section to choose your scanning parameters
+#######################################
+#Single
+#nf image (intensity in the lens)
 save_intensity=True
 size_intensity_arr=(2000,2000)
-#ff image
+#ff image (intensity after lens of the focus etc)
 size_ff_arr=(4000,4000)
 #----------------------
-#Advanced stuff and pre-calculations
-corr_factor_z=39.36 #correction factor in z direction. There is still a wrong scaling along this axis. !
-slicevac_corr=slicevac*corr_factor_z

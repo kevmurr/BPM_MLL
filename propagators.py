@@ -14,6 +14,7 @@ def split_operator(input_wave,opt_const,step_size,px_size=cf.pxsize):
     #output_wave=np.fft.ifft(np.multiply(refr,np.exp(-1j*kz*step_size)))
     return(output_wave)
 def split_operator_andr(input_wave,opt_const,step_size,px_size=cf.pxsize):
+    #this is not fully operational yet! However, except some rescaling it should be quite similar to split_operator
     Mx=input_wave.shape[0]
     dx=px_size*2*np.pi/cf.wavelength
     dkx= 2*np.pi/(Mx*dx)

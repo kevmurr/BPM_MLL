@@ -1,0 +1,99 @@
+import config as cf
+import numpy as np
+import mk_sample as mks
+import propagators as pr
+from math import ceil
+#mk incidend wave
+def mk_incident_wave(wave_type=cf.incident_type):
+    if wave_type=="plane":
+        if cf.theta==None:
+            theta=0
+        else:
+            theta=cf.theta
+        incident_wave=mks.mk_plane_wave(N_px=cf.N_px,Amp=1,theta=theta,wavelength=cf.wavelength,pxsize=cf.pxsize)
+    return(incident_wave)    
+def b_vac():
+    opt_const_vac=mks.mk_bulk()
+    return(opt_const_vac)
+def b_slit():
+    if cf.mk_slit==True:
+        slits=mks.mk_slit()
+        stepslit=cf.slits_depth/cf.slits_steps
+    return(slits,stepslit)
+
+def b_mll(mll_type=cf.mll_type):
+#if mll is flat the optical constants are already made here. If not then they will be made every step when calculating bpm
+    if mll_type=="flat":
+        grating=mks.mk_wedged_mll(z_val=0,offset_x=cf.mll_offset)
+    N_steps_grat=int(cf.mll_depth/cf.stepsize_z)
+    return(grating,N_steps_grat)
+def prop_slit(input_wave,stepslit,opt_const):
+    wave0=input_wave
+    for i in range(0,cf.slits_steps,1):
+        wave0=pr.split_operator(wave0,opt_const=opt_const,step_size=stepslit)
+        print("Propagating through slit: %s/%s" %(i,cf.slits_steps))
+    output_wave=wave0
+    return(output_wave)
+
+def prop_mll(input_wave,opt_const,N_steps_grat,step_size=cf.stepsize_z):
+    mll_type=cf.mll_type
+    wave=input_wave
+    grating=opt_const
+    if mll_type=="flat":
+        modulo_img=int(N_steps_grat/cf.size_intensity_arr[1])
+        if modulo_img==0:
+            modulo_img=1
+        if cf.size_intensity_arr[1]<N_steps_grat:
+            intensity_plot=np.zeros((cf.size_intensity_arr[0],cf.size_intensity_arr[1]))
+        else:
+            intensity_plot=np.zeros((cf.size_intensity_arr[0],N_steps_grat))
+        i2=0
+        for i1 in range(N_steps_grat):
+            wave=pr.split_operator(wave,opt_const=grating,step_size=step_size)
+            if i1%modulo_img==0:
+                wave_now=np.abs(wave)
+                modulo_bin=ceil(wave_now.shape[0]/cf.size_intensity_arr[0])
+                #now binning down
+                i3=0
+                wave_bin=np.zeros((cf.size_intensity_arr[0]))
+                for i in range(0,wave_now.shape[0],1):
+                    if i%modulo_bin==0:
+                        wave_bin[i3]=wave_now[i]
+                        i3+=1   
+                intensity_plot[:,i2]=wave_bin
+                i2+=1
+                print("Sample slice %s of %s completed"%(i1,N_steps_grat))
+    output_wave=wave
+    return(output_wave,intensity_plot)
+def prop_single(input_wave,opt_const,stepvac=cf.stepvac):
+     #stepsize of free space propagator in meters
+     output_wave=pr.split_operator(input_wave,opt_const=opt_const,step_size=stepvac)
+     return(output_wave)
+
+def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicevac):
+    wave3=input_wave
+    modulo_img=round(N_slices_vac/cf.size_ff_arr[1])
+    if modulo_img==0:
+        modulo_img=1
+    if cf.size_ff_arr[1]<N_slices_vac:
+        intensity_ff=np.zeros((cf.size_ff_arr[0],cf.size_ff_arr[1]))
+    else:
+        intensity_ff=np.zeros((cf.size_ff_arr[1],N_slices_vac))
+    i2=0
+    for i in range(N_slices_vac):
+        wave3=pr.split_operator(wave3,opt_const=opt_const,step_size=step_size)
+        if i%modulo_img==0:
+            wave_now=np.abs(wave3)
+            modulo_bin=ceil(wave_now.shape[0]/cf.size_ff_arr[0])
+            #now binning down
+            i3=0
+            wave_bin=np.zeros((cf.size_ff_arr[0]))
+            for i1 in range(0,wave_now.shape[0],1):
+                if i1%modulo_bin==0:
+                    wave_bin[i3]=wave_now[i1]
+                    i3+=1   
+            intensity_ff[:,i2]=wave_bin
+            i2+=1
+        print("Farfield slice %s of %s completed"%(i,N_slices_vac))
+    output_wave=wave3
+    return(output_wave,intensity_ff)
