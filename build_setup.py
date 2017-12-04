@@ -4,13 +4,9 @@ import mk_sample as mks
 import propagators as pr
 from math import ceil
 #mk incidend wave
-def mk_incident_wave(wave_type=cf.incident_type):
+def mk_incident_wave(theta,wave_type=cf.incident_type):
     if wave_type=="plane":
-        if cf.theta==None:
-            theta=0
-        else:
-            theta=cf.theta
-        incident_wave=mks.mk_plane_wave(N_px=cf.N_px,Amp=1,theta=theta,wavelength=cf.wavelength,pxsize=cf.pxsize)
+        incident_wave=mks.mk_plane_wave(theta=theta,N_px=cf.N_px,Amp=1,wavelength=cf.wavelength,pxsize=cf.pxsize)
     return(incident_wave)    
 def b_vac():
     opt_const_vac=mks.mk_bulk()
@@ -24,7 +20,7 @@ def b_slit():
 def b_mll(mll_type=cf.mll_type):
 #if mll is flat the optical constants are already made here. If not then they will be made every step when calculating bpm
     if mll_type=="flat":
-        grating=mks.mk_wedged_mll(z_val=0,offset_x=cf.mll_offset)
+        grating=mks.mk_flat_mll(z_val=0,offset_x=cf.mll_offset)
     N_steps_grat=int(cf.mll_depth/cf.stepsize_z)
     return(grating,N_steps_grat)
 def prop_slit(input_wave,stepslit,opt_const):
@@ -35,7 +31,7 @@ def prop_slit(input_wave,stepslit,opt_const):
     output_wave=wave0
     return(output_wave)
 
-def prop_mll(input_wave,opt_const,N_steps_grat,step_size=cf.stepsize_z):
+def prop_mll(input_wave,opt_const,N_steps_grat,step_size=cf.stepsize_z,i_img=1,N_img=1):
     mll_type=cf.mll_type
     wave=input_wave
     grating=opt_const
@@ -62,7 +58,7 @@ def prop_mll(input_wave,opt_const,N_steps_grat,step_size=cf.stepsize_z):
                         i3+=1   
                 intensity_plot[:,i2]=wave_bin
                 i2+=1
-                print("Sample slice %s of %s completed"%(i1,N_steps_grat))
+                print("Img(%s/%s) Sample slice %s of %s completed"%(i_img,N_img,i1,N_steps_grat))
     output_wave=wave
     return(output_wave,intensity_plot)
 def prop_single(input_wave,opt_const,stepvac=cf.stepvac):
@@ -70,7 +66,7 @@ def prop_single(input_wave,opt_const,stepvac=cf.stepvac):
      output_wave=pr.split_operator(input_wave,opt_const=opt_const,step_size=stepvac)
      return(output_wave)
 
-def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicevac):
+def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicevac,i_img=1,N_img=1):
     wave3=input_wave
     modulo_img=round(N_slices_vac/cf.size_ff_arr[1])
     if modulo_img==0:
@@ -94,6 +90,6 @@ def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slic
                     i3+=1   
             intensity_ff[:,i2]=wave_bin
             i2+=1
-        print("Farfield slice %s of %s completed"%(i,N_slices_vac))
+        print("Img (%s/%s) Farfield slice %s of %s completed"%(i_img,N_img,i,N_slices_vac))
     output_wave=wave3
     return(output_wave,intensity_ff)
