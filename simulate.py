@@ -5,6 +5,7 @@ import config as cf
 import matplotlib.pyplot as plt
 import build_setup as bs
 from shutil import copyfile
+import utils as ut
 ################################################
 #SINGLE SCAN
 ################################################
@@ -50,7 +51,10 @@ if cf.scanmode=="single" or cf.scanmode=="Single" or cf.scanmode=="s":
     #---------------------------------------------------------------------------
     #MLL
     wave=wave1
-    mll_prop_result=bs.prop_mll(wave,N_steps_grat=N_steps_grat,opt_const=grating)
+    if cf.mll_type=="flat":
+        mll_prop_result=bs.prop_mll_flat(wave,N_steps_grat=N_steps_grat,opt_const=grating)
+    if cf.mll_type=="wedged":
+        mll_prop_result=bs.prop_mll_wedge(wave,N_steps_grat=N_steps_grat)
     wave=mll_prop_result[0]
     intensity_in_mll=mll_prop_result[1]
     #---------------------------------------------------------------------------
@@ -77,6 +81,8 @@ if cf.scanmode=="efficiency" or cf.scanmode=="Efficiency" or cf.scanmode=="e":
 #OMEGATHETA SCAN
 ##################################################
 if cf.scanmode=="omegatheta" or cf.scanmode=="Omegatheta" or cf.scanmode=="o":
+    #check the save directory:
+    ut.check_directory(cf.save_directory)
     import numpy as np
     thetaarr=np.linspace(cf.theta_start,cf.theta_end,cf.N_theta)
     for i_theta in range(0,cf.N_theta,1):
@@ -121,10 +127,15 @@ if cf.scanmode=="omegatheta" or cf.scanmode=="Omegatheta" or cf.scanmode=="o":
         wave1=bs.prop_single(wave1,opt_const=opt_const_vac)
         #---------------------------------------------------------------------------
         #MLL
+        
         wave=wave1
-        mll_prop_result=bs.prop_mll(wave,N_steps_grat=N_steps_grat,opt_const=grating,i_img=i_theta,N_img=cf.N_theta)
+        if cf.mll_type=="flat":
+            mll_prop_result=bs.prop_mll_flat(wave,N_steps_grat=N_steps_grat,opt_const=grating,i_img=i_theta,N_img=cf.N_theta)
+        if cf.mll_type=="wedged":
+            mll_prop_result=bs.prop_mll_wedge(wave,N_steps_grat=N_steps_grat,i_img=i_theta,N_img=cf.N_theta)
         wave=mll_prop_result[0]
         intensity_in_mll=mll_prop_result[1]
+
         #---------------------------------------------------------------------------
         #FREESPACE
         freespace_prop_result=bs.prop_bulk(wave,opt_const=opt_const_vac,i_img=i_theta,N_img=cf.N_theta)
