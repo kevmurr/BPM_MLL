@@ -107,7 +107,8 @@ if cf.scanmode=="omegatheta" or cf.scanmode=="Omegatheta" or cf.scanmode=="o":
             mll_pre_result=bs.b_mll()
             grating=mll_pre_result[0]
             N_steps_grat=mll_pre_result[1]
-        
+        if cf.mll_type=="wedged":
+            N_steps_grat=int(cf.mll_depth/cf.stepsize_z)
         #------------------------------------------------------------------------
         #####################################
         #The Propagation

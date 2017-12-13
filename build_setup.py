@@ -22,9 +22,10 @@ def b_mll(z=0,mll_type=cf.mll_type):
     if mll_type=="flat":
         grating=mks.mk_wedged_mll(z=0,sigma=cf.sigma_flat,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,wavelength=cf.wavelength,n_begin=cf.n_begin,n_end=cf.n_end,delta_1=cf.delta_1,delta_2=cf.delta_2,beta_1=cf.beta_1,beta_2=cf.beta_2)
     N_steps_grat=int(cf.mll_depth/cf.stepsize_z)
-    return(grating,N_steps_grat)
     if mll_type=="wedged":
         grating=mks.mk_wedged_mll(z,N_px=cf.N_px,sigma=cf.sigma_wedge,pxsize=cf.pxsize,f=cf.f,wavelength=cf.wavelength,n_begin=cf.n_begin,n_end=cf.n_end,delta_1=cf.delta_1,delta_2=cf.delta_2,beta_1=cf.beta_1,beta_2=cf.beta_2)
+    return(grating,N_steps_grat)
+    
 def prop_slit(input_wave,stepslit,opt_const):
     wave0=input_wave
     for i in range(0,cf.slits_steps,1):
