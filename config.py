@@ -30,7 +30,7 @@ mll_type="wedged" #choose "flat" or wedged
 n_begin=322 #first layer
 n_end=5822 #last layer
 mll_depth=6*10**-6
-mll_offset=0*10**-6#0.0001-0.77*10**-5 #offset in meters
+mll_offset=10*10**-6#0.0001-0.77*10**-5 #offset in meters
 sigma_flat=None # this is the sigma of the layers. None means the optical constants are like a rect function-> faster calculation!
 sigma_wedge=1
 
@@ -39,7 +39,7 @@ sigma_wedge=1
 mk_slit=True #True if slit should be used
 slits_size=30*10**-6 #size in meters
 slits_depth=100*10**-6
-slit_offset=7.5*10**-6
+slit_offset=17.5*10**-6
 slits_delta=oc.delta_W_17_3
 slits_beta=oc.beta_W_17_3
 slits_steps=100 #number of steps in slit
