@@ -43,7 +43,7 @@ def mk_slit(size=cf.slits_size,delta=cf.slits_delta,beta=cf.slits_beta,offset=cf
     return(slit)
 
 
-def mk_wedged_mll(z=0,sigma=None,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,wavelength=cf.wavelength,n_begin=cf.n_begin,n_end=cf.n_end,delta_1=cf.delta_1,delta_2=cf.delta_2,beta_1=cf.beta_1,beta_2=cf.beta_2):
+def mk_wedged_mll(z=0,sigma=None,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,offset=cf.mll_offset,wavelength=cf.wavelength,n_begin=cf.n_begin,n_end=cf.n_end,delta_1=cf.delta_1,delta_2=cf.delta_2,beta_1=cf.beta_1,beta_2=cf.beta_2):
     r=np.arange(0,N_px*pxsize,pxsize)
     stretch=(1-z/(2*f))
     t_array=2*np.pi*(np.sqrt(f**2*wavelength**2+wavelength**2*np.square(r/stretch))-f*wavelength)/wavelength**2
@@ -58,9 +58,8 @@ def mk_wedged_mll(z=0,sigma=None,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,wavelength
     diff_beta=beta_1-beta_2
     complex_array=(rect*diff_delta/2+delta_2)+1j*(rect*diff_beta/2+beta_2)
     complex_array=np.multiply(mask,complex_array)
+    #now applying an offset
+    if offset!=0:
+        shift_px=int(offset/pxsize)
+        complex_array=np.roll(complex_array,shift_px)
     return(complex_array)
-#import matplotlib.pyplot as plt
-#s1=np.real(mk_wedged_mll(sigma=None))
-#s2=np.real(mk_wedged_mll(sigma=2))
-#plt.plot(s1)
-#plt.plot(s2)

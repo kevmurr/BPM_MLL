@@ -1,10 +1,11 @@
 import optical_constants as oc
+import scipy.constants as sc
 #General experimental parameters
-energy=17.3 #energy in kev
-wavelength=6.62*10**-34*2.99*10**8/(energy*1000*1.6022*10**-19)#wavelength in meters
-f=0.0065 #geometrical focal length in meters
-scanmode="omegatheta" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
-save_directory="C:/Users/murrayke/Desktop/test_sim/"#This is the directory where files are saved if there are files saved
+energy=17.3 #energy in kev,if shifted_energy is NOne, this is the incident energy AND the energy that the lens is designed for. IF shifted_energy has a value, the incident beam has the energy shifted_energy
+
+f=0.0025 #geometrical focal length in meters
+scanmode="single" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
+save_directory="C:/Users/murrayke/Desktop/test_efficiency/"#This is the directory where files are saved if there are files saved
 #simulation parameters
 pxsize=0.2*10**-9 #px size in x direction in m
 stepsize_z=10*10**-9
@@ -12,7 +13,8 @@ N_px=5*10**5
 #---------------------------------------------
 #Incident wave
 incident_type="plane"#shape of the incident wave (right now only plane wave supported. For this enter "plane")
-theta=-0.004 #angle of the incident wave in rad (for omegatheta the theta array is being defined below)
+theta=0 #angle of the incident wave in rad (for omegatheta the theta array is being defined below)
+shifted_energy=None # If this is None, the incident wavelength is calculacted with the energy. If this has a value, the incident energy is shifted_energy and the lens design is for energy.
 
 #---------------------------------------------
 #optical constants of multilayer materials
@@ -28,7 +30,7 @@ mll_type="wedged" #choose "flat" or wedged
 n_begin=322 #first layer
 n_end=5822 #last layer
 mll_depth=6*10**-6
-mll_offset=0#0.0001-0.77*10**-5 #offset in meters
+mll_offset=0*10**-6#0.0001-0.77*10**-5 #offset in meters
 sigma_flat=None # this is the sigma of the layers. None means the optical constants are like a rect function-> faster calculation!
 sigma_wedge=1
 
@@ -51,12 +53,24 @@ slicevac=1*10**-5 #distance of a single slice in vac if multiple slices are calc
 #######################################
 #SCANNING PARAMETERS. please jump to the respective section to choose your scanning parameters
 #######################################
-#SINGLE (These settings are also true for omegatheta, efficiency etc)
+#GENERAL (These settings are also true for omegatheta, efficiency etc)
 #--------------------------------------
 #nf image (intensity in the lens)
 size_intensity_arr=(2000,2000)
 #ff image (intensity after lens of the focus etc)
 size_ff_arr=(4000,4000)
+save_ot_inlens=True #This specifies if the intensity image inside the lens should be saved (both as npy file and as png)
+save_ot_afterlens=True #This specifies if the intensity image after the lens should be saved (both as npy file and as png)
+save_ot_wave=True #This specifies if the complex valued wave array at the exit pupil should be saved
+save_ot_wave_end=True #This specifies if the complex valued wave array at the end of the simulation
+#######################################
+#EFFICIENCY 
+#-------------------------------------
+#General parameters
+N_depth=30 #number of images taken (number of lens thickness values)
+depth_start=1*10**-6 #start of efficiency scan in m
+depth_end=20*10**-6 #end of efficiency scan in m
+
 #######################################
 #OMEGATHETA
 #--------------------------------------
@@ -64,8 +78,10 @@ size_ff_arr=(4000,4000)
 N_theta=10 #number of images taken (number of theta values)
 theta_start=0 #start of the theta scan in rad
 theta_end=-0.01 #end of the theta scan in rad
-#Saving parameters
-save_ot_inlens=True #This specifies if the intensity image inside the lens should be saved (both as npy file and as png)
-save_ot_afterlens=True #This specifies if the intensity image after the lens should be saved (both as npy file and as png)
-save_ot_wave=True #This specifies if the complex valued wave array at the exit pupil should be saved
-save_ot_wave_end=True #This specifies if the complex valued wave array at the end of the simulation
+
+###############################################
+#PRE CALCULATION
+###############################################
+wavelength=sc.h*sc.c/(energy*1000*sc.e)#wavelength in meters.
+if shifted_energy!=None:
+    shifted_wavelength=sc.h*sc.c/(energy*1000*sc.e)

@@ -6,7 +6,10 @@ from math import ceil
 #mk incidend wave
 def mk_incident_wave(theta,wave_type=cf.incident_type):
     if wave_type=="plane":
-        incident_wave=mks.mk_plane_wave(theta=theta,N_px=cf.N_px,Amp=1,wavelength=cf.wavelength,pxsize=cf.pxsize)
+        if cf.shifted_energy==None:
+            incident_wave=mks.mk_plane_wave(theta=theta,N_px=cf.N_px,Amp=1,wavelength=cf.wavelength,pxsize=cf.pxsize)
+        else:
+            incident_wave=mks.mk_plane_wave(theta=theta,N_px=cf.N_px,Amp=1,wavelength=cf.shifted_wavelength,pxsize=cf.pxsize)
     return(incident_wave)    
 def b_vac():
     opt_const_vac=mks.mk_bulk()

@@ -15,7 +15,9 @@ def check_directory(path):
     else:
         return IOError("Given save_directory doesn't exist! Please choose another one")
     
-    
+def check_lenstype():
+    if cf.mll_type!="flat" or cf.mll_type!="wedged":
+        return IOError("Lens type not understood! Has to be flat or wedged")
 ######################################
 #OLD FUNCTIONS
 def mk_wedged_mll_andr(z,sigma=1,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,wavelength=cf.wavelength,n_begin=cf.n_begin,n_end=cf.n_end,delta_1=cf.delta_1,delta_2=cf.delta_2,beta_1=cf.beta_1,beta_2=cf.beta_2):
