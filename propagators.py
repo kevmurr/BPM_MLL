@@ -1,7 +1,7 @@
 import numpy as np
 import config as cf
 wavelength=cf.wavelength
-def split_operator(input_wave,opt_const,step_size,px_size=cf.pxsize):
+def split_operator(input_wave,opt_const,step_size,wavelength=cf.wavelength,px_size=cf.pxsize):
     #this is a split operator beam propagation method according to robert r mcleod
     k0=2*np.pi/(wavelength)
     #for now i will normaize the fft of the sample and multiply with k0 to get kx

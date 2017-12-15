@@ -4,8 +4,8 @@ import scipy.constants as sc
 energy=17.3 #energy in kev,if shifted_energy is NOne, this is the incident energy AND the energy that the lens is designed for. IF shifted_energy has a value, the incident beam has the energy shifted_energy
 
 f=0.0025 #geometrical focal length in meters
-scanmode="single" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
-save_directory="C:/Users/murrayke/Desktop/test_efficiency/"#This is the directory where files are saved if there are files saved
+scanmode="omegatheta" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
+save_directory="F:/Simulations/BPM_MLL/omegatheta/test6_10steps17kev/"#This is the directory where files are saved if there are files saved
 #simulation parameters
 pxsize=0.2*10**-9 #px size in x direction in m
 stepsize_z=10*10**-9
@@ -76,12 +76,13 @@ depth_end=20*10**-6 #end of efficiency scan in m
 #--------------------------------------
 #General parameters
 N_theta=10 #number of images taken (number of theta values)
-theta_start=0 #start of the theta scan in rad
-theta_end=-0.01 #end of the theta scan in rad
+theta_start=-0.05 #start of the theta scan in rad
+theta_end=0.05 #end of the theta scan in rad
 
 ###############################################
 #PRE CALCULATION
 ###############################################
 wavelength=sc.h*sc.c/(energy*1000*sc.e)#wavelength in meters.
 if shifted_energy!=None:
-    shifted_wavelength=sc.h*sc.c/(energy*1000*sc.e)
+    print("Applying shifted energy...")
+    shifted_wavelength=sc.h*sc.c/(shifted_energy*1000*sc.e)

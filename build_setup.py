@@ -41,6 +41,9 @@ def prop_mll_flat(input_wave,opt_const,N_steps_grat,step_size=cf.stepsize_z,i_im
     mll_type=cf.mll_type
     wave=input_wave
     grating=opt_const
+    wavelength=cf.wavelength
+    if cf.shifted_energy!=None:
+        wavelength=cf.shifted_wavelength
     if mll_type=="flat":
         modulo_img=int(N_steps_grat/cf.size_intensity_arr[1])
         if modulo_img==0:
@@ -51,7 +54,7 @@ def prop_mll_flat(input_wave,opt_const,N_steps_grat,step_size=cf.stepsize_z,i_im
             intensity_plot=np.zeros((cf.size_intensity_arr[0],N_steps_grat))
         i2=0
         for i1 in range(N_steps_grat):
-            wave=pr.split_operator(wave,opt_const=grating,step_size=step_size)
+            wave=pr.split_operator(wave,wavelength=wavelength,opt_const=grating,step_size=step_size)
             if i1%modulo_img==0:
                 wave_now=np.abs(wave)
                 modulo_bin=ceil(wave_now.shape[0]/cf.size_intensity_arr[0])
@@ -70,6 +73,9 @@ def prop_mll_flat(input_wave,opt_const,N_steps_grat,step_size=cf.stepsize_z,i_im
 def prop_mll_wedge(input_wave,N_steps_grat,step_size=cf.stepsize_z,i_img=1,N_img=1):
     mll_type=cf.mll_type
     wave=input_wave
+    wavelength=cf.wavelength
+    if cf.shifted_energy!=None:
+        wavelength=cf.shifted_wavelength
     if mll_type=="wedged":
         modulo_img=int(N_steps_grat/cf.size_intensity_arr[1])
         if modulo_img==0:
@@ -84,7 +90,7 @@ def prop_mll_wedge(input_wave,N_steps_grat,step_size=cf.stepsize_z,i_img=1,N_img
             grating=mks.mk_wedged_mll(z=z)
             z=z+step_size
             #print("z value is currently %s m" %z)
-            wave=pr.split_operator(wave,opt_const=grating,step_size=step_size)
+            wave=pr.split_operator(wave,wavelength=wavelength,opt_const=grating,step_size=step_size)
             if i1%modulo_img==0:
                 wave_now=np.abs(wave)
                 modulo_bin=ceil(wave_now.shape[0]/cf.size_intensity_arr[0])
