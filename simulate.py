@@ -66,6 +66,7 @@ if cf.scanmode=="single" or cf.scanmode=="Single" or cf.scanmode=="s":
     freespace_prop_result=bs.prop_bulk(wave,opt_const=opt_const_vac)
     wave_end=freespace_prop_result[0]
     intensity_after_mll=freespace_prop_result[1]
+    ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,i_scan=0)
     print("")
     print("The incident wave is ""wave00""")
     print("Wave at entry of lens is ""wave1""")
@@ -141,20 +142,7 @@ if cf.scanmode=="efficiency" or cf.scanmode=="Efficiency" or cf.scanmode=="e":
         intensity_after_mll=freespace_prop_result[1]
         #Saving stuff
         print("Saving...")
-        if cf.save_ot_inlens==True:
-            print("Saving...intensity in lens")
-            np.save("%sdepth_%s_int_in_lens.npy"%(str(cf.save_directory),i_depth),intensity_in_mll)
-        if cf.save_ot_afterlens==True:
-            print("Saving...intensity after lens")
-            np.save("%sdepth_%s_int_after_lens.npy"%(str(cf.save_directory),i_depth),intensity_after_mll)
-        if cf.save_ot_wave==True:
-            print("Saving...complex wave vector at exit pupil of lens")
-            np.save("%sdepth_%s_pupil_wave.npy"%(str(cf.save_directory),i_depth),wave)
-        if cf.save_ot_wave_end==True:
-            print("Saving...complex wave vector at end of simulation")
-            np.save("%sdepth_%s_pupil_end.npy"%(str(cf.save_directory),i_depth),wave_end)
-    print("Saving...copy of config for logging")
-    copyfile("config.py", str(cf.save_directory)+"config.py")
+        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,i_scan=i_depth)
     print("Finished run.")
     
 ##################################################
@@ -225,18 +213,5 @@ if cf.scanmode=="omegatheta" or cf.scanmode=="Omegatheta" or cf.scanmode=="o":
         intensity_after_mll=freespace_prop_result[1]
         #Saving stuff
         print("Saving...")
-        if cf.save_ot_inlens==True:
-            print("Saving...intensity in lens")
-            np.save("%stheta_%s_int_in_lens.npy"%(str(cf.save_directory),i_theta),intensity_in_mll)
-        if cf.save_ot_afterlens==True:
-            print("Saving...intensity after lens")
-            np.save("%stheta_%s_int_after_lens.npy"%(str(cf.save_directory),i_theta),intensity_after_mll)
-        if cf.save_ot_wave==True:
-            print("Saving...complex wave vector at exit pupil of lens")
-            np.save("%stheta_%s_pupil_wave.npy"%(str(cf.save_directory),i_theta),wave)
-        if cf.save_ot_wave_end==True:
-            print("Saving...complex wave vector at end of simulation")
-            np.save("%stheta_%s_pupil_end.npy"%(str(cf.save_directory),i_theta),wave_end)
-    print("Saving...copy of config for logging")
-    copyfile("config.py", str(cf.save_directory)+"config.py")
+        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,i_scan=i_theta)
     print("Finished run.")

@@ -1,6 +1,7 @@
 import numpy as np
 import cmath
 import config as cf
+import h5py as h5
 def get_phase(arr):
     phase=np.zeros_like(arr)
     for i in range(0,arr.shape[0],1):
@@ -18,6 +19,118 @@ def check_directory(path):
 def check_lenstype():
     if cf.mll_type!="flat" or cf.mll_type!="wedged":
         return IOError("Lens type not understood! Has to be flat or wedged")
+
+def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,i_scan):
+    if i_scan==0:
+        print("Creating h5 file...")
+        f=h5.File(cf.save_directory,"w")
+        data=f.create_group("data")
+        if cf.save_ot_inlens==True:
+            data.create_dataset("int_in_lens",data=data_int_in_lens)
+        if cf.save_ot_afterlens==True:
+            data.create_dataset("int_after_lens",data=data_int_after_lens)
+        if cf.save_ot_wave==True:
+            data.create_dataset("pupil",data=data_pupil)
+        if cf.save_ot_wave_end==True:
+            data.create_dataset("data_end",data=data_end)
+        #writing the log
+        log=f.create_group("log")
+        general=log.create_group("general")
+        general.create_dataset("wavelength",data=cf.wavelength)
+        general.create_dataset("N_px",data=cf.N_px)
+        general.create_dataset("px_size",data=cf.pxsize)
+        
+        if cf.scanmode=="omegatheta":
+            thetaarr=np.linspace(cf.theta_start,cf.theta_end,cf.N_theta)
+            general.create_dataset("theta_arr",data=thetaarr)
+        else:
+            general.create_dataset("theta",data=cf.theta)
+        mll=log.create_group("mll")
+        if cf.scanmode=="efficiency":
+            deptharr=np.linspace(cf.depth_start,cf.depth_end,cf.N_depth)
+            mll.create_dataset("depth_arr",data=deptharr)
+        else:
+            mll.create_dataset("mll_depth",data=cf.mll_depth)
+        mll.create_dataset("mll_offset",data=cf.mll_offset)
+        mll.create_dataset("mll_type",data=str(cf.mll_type))
+        if cf.mll_type=="flat":
+            mll.create_dataset("sigma",data=cf.sigma_flat)
+        if cf.mll_type=="wedged":
+            mll.create_dataset("sigma",data=cf.sigma_wedge)
+        mll.create_dataset("n_start",data=cf.n_begin)
+        mll.create_dataset("n_end",data=cf.n_end)
+        mll.create_dataset("delta1",data=cf.delta_1)
+        mll.create_dataset("delta2",data=cf.delta_2)
+        mll.create_dataset("beta1",data=cf.beta_1)
+        mll.create_dataset("beta2",data=cf.beta_2)
+        mll.create_dataset("stepsize_z",data=cf.stepsize_z)
+        mll.create_dataset("f",data=cf.f)
+        if cf.shifted_energy!=None:
+            mll.create_dataset("shifted_wavelength",data=cf.shifted_wavelength)
+        slits=log.create_group("slits")
+        slits.create_dataset("mk_slit",data=cf.mk_slit)
+        slits.create_dataset("slits_size",data=cf.slits_size)
+        slits.create_dataset("slits_offset",data=cf.slit_offset)
+        slits.create_dataset("slits_depth",data=cf.slits_depth)
+        slits.create_dataset("slits_steps",data=cf.slits_steps)
+        slits.create_dataset("slits_delta",data=cf.slits_delta)
+        slits.create_dataset("slits_beta",data=cf.slits_beta)
+        vac=log.create_group("vacuum")
+        vac.create_dataset("slicevac",data=cf.slicevac)
+        vac.create_dataset("N",data=cf.N_slices_ff)
+        f.close()
+    else:
+        print("Updating h5 file...")
+        f=h5.File(cf.save_directory,"a")
+        if cf.save_ot_inlens==True:
+            folder=f["data"]
+            data=f["data/int_in_lens"][:]
+            if i_scan==1:
+                small_data=data.reshape((1,data.shape[0],data.shape[1]))
+            else:
+                small_data=data
+            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1],small_data.shape[2]))
+            big_data[:-1,:,:]=small_data
+            big_data[-1,:,:]=data_int_in_lens
+            del f["/data/int_in_lens"]
+            folder.create_dataset("int_in_lens",data=big_data)
+        if cf.save_ot_afterlens==True:
+            folder=f["data"]
+            data=f["data/int_after_lens"][:]
+            if i_scan==1:
+                small_data=data.reshape((1,data.shape[0],data.shape[1]))
+            else:
+                small_data=data
+            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1],small_data.shape[2]))
+            big_data[:-1,:,:]=small_data
+            big_data[-1,:,:]=data_int_after_lens
+            del f["/data/int_after_lens"]
+            folder.create_dataset("int_after_lens",data=big_data)
+        if cf.save_ot_wave==True:
+            folder=f["data"]
+            data=f["data/pupil"][:]
+            if i_scan==1:
+                small_data=data.reshape((1,data.shape[0]))
+            else:
+                small_data=data
+            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1]))
+            big_data[:-1,:]=small_data
+            big_data[-1,:]=data_pupil
+            del f["/data/pupil"]
+            folder.create_dataset("pupil",data=big_data)
+        if cf.save_ot_wave_end==True:
+            folder=f["data"]
+            data=f["data/data_end"][:]
+            if i_scan==1:
+                small_data=data.reshape((1,data.shape[0]))
+            else:
+                small_data=data
+            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1]))
+            big_data[:-1,:]=small_data
+            big_data[-1,:]=data_end
+            del f["/data/data_end"]
+            folder.create_dataset("data_end",data=big_data)
+        f.close()
 ######################################
 #OLD FUNCTIONS
 def mk_wedged_mll_andr(z,sigma=1,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,wavelength=cf.wavelength,n_begin=cf.n_begin,n_end=cf.n_end,delta_1=cf.delta_1,delta_2=cf.delta_2,beta_1=cf.beta_1,beta_2=cf.beta_2):

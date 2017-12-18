@@ -5,10 +5,10 @@ energy=17.3 #energy in kev,if shifted_energy is NOne, this is the incident energ
 
 f=0.0025 #geometrical focal length in meters
 scanmode="omegatheta" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
-save_directory="F:/Simulations/BPM_MLL/omegatheta/test6_10steps17kev/"#This is the directory where files are saved if there are files saved
+save_directory="F:/Simulations/BPM_MLL/single/otest.h5"#This is the filename how the data should be saved
 #simulation parameters
 pxsize=0.2*10**-9 #px size in x direction in m
-stepsize_z=10*10**-9
+stepsize_z=10*10**-9#stepsize in mll
 N_px=5*10**5
 #---------------------------------------------
 #Incident wave
@@ -59,10 +59,10 @@ slicevac=1*10**-5 #distance of a single slice in vac if multiple slices are calc
 size_intensity_arr=(2000,2000)
 #ff image (intensity after lens of the focus etc)
 size_ff_arr=(4000,4000)
-save_ot_inlens=True #This specifies if the intensity image inside the lens should be saved (both as npy file and as png)
+save_ot_inlens=False #This specifies if the intensity image inside the lens should be saved (both as npy file and as png)
 save_ot_afterlens=True #This specifies if the intensity image after the lens should be saved (both as npy file and as png)
 save_ot_wave=True #This specifies if the complex valued wave array at the exit pupil should be saved
-save_ot_wave_end=True #This specifies if the complex valued wave array at the end of the simulation
+save_ot_wave_end=False #This specifies if the complex valued wave array at the end of the simulation
 #######################################
 #EFFICIENCY 
 #-------------------------------------
@@ -75,7 +75,7 @@ depth_end=20*10**-6 #end of efficiency scan in m
 #OMEGATHETA
 #--------------------------------------
 #General parameters
-N_theta=10 #number of images taken (number of theta values)
+N_theta=4 #number of images taken (number of theta values)
 theta_start=-0.05 #start of the theta scan in rad
 theta_end=0.05 #end of the theta scan in rad
 
