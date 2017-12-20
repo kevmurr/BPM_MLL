@@ -4,7 +4,6 @@
 import config as cf
 import matplotlib.pyplot as plt
 import build_setup as bs
-from shutil import copyfile
 import utils as ut
 ################################################
 #SINGLE SCAN
@@ -66,7 +65,8 @@ if cf.scanmode=="single" or cf.scanmode=="Single" or cf.scanmode=="s":
     freespace_prop_result=bs.prop_bulk(wave,opt_const=opt_const_vac)
     wave_end=freespace_prop_result[0]
     intensity_after_mll=freespace_prop_result[1]
-    ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,i_scan=0)
+    wave_focus=freespace_prop_result[2]
+    ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=0)
     print("")
     print("The incident wave is ""wave00""")
     print("Wave at entry of lens is ""wave1""")
@@ -74,6 +74,8 @@ if cf.scanmode=="single" or cf.scanmode=="Single" or cf.scanmode=="s":
     print("Wave at the end of simulation is ""wave_end""")
     print("The nearfield propagation in the sample is saved as ""intensity_in_mll""")
     print("The farfield propagation in the sample is saved as ""intensity_after_mll""")
+    print("The farfield propagation in the sample is saved as ""wave_focus""")
+    print("The detected focal plane is in slice %s which is %s mm from the MLL."%(freespace_prop_result[3],1000*freespace_prop_result[3]*cf.slicevac))
     print("Finished run.")
 ##################################################
 #EFFICIENCY SCAN
@@ -140,9 +142,11 @@ if cf.scanmode=="efficiency" or cf.scanmode=="Efficiency" or cf.scanmode=="e":
         freespace_prop_result=bs.prop_bulk(wave,opt_const=opt_const_vac,i_img=i_depth,N_img=cf.N_depth)
         wave_end=freespace_prop_result[0]
         intensity_after_mll=freespace_prop_result[1]
+        wave_focus=freespace_prop_result[2]
         #Saving stuff
+        print("The detected focal plane is in slice %s which is %s mm from the MLL."%(freespace_prop_result[3],1000*freespace_prop_result[3]*cf.slicevac))
         print("Saving...")
-        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,i_scan=i_depth)
+        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=i_depth)
     print("Finished run.")
     
 ##################################################
@@ -211,7 +215,9 @@ if cf.scanmode=="omegatheta" or cf.scanmode=="Omegatheta" or cf.scanmode=="o":
         freespace_prop_result=bs.prop_bulk(wave,opt_const=opt_const_vac,i_img=i_theta,N_img=cf.N_theta)
         wave_end=freespace_prop_result[0]
         intensity_after_mll=freespace_prop_result[1]
+        wave_focus=freespace_prop_result[2]
         #Saving stuff
+        print("The detected focal plane is in slice %s which is %s mm from the MLL."%(freespace_prop_result[3],1000*freespace_prop_result[3]*cf.slicevac))
         print("Saving...")
-        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,i_scan=i_theta)
+        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=i_theta)
     print("Finished run.")

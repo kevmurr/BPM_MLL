@@ -2,12 +2,16 @@ import numpy as np
 import cmath
 import config as cf
 import h5py as h5
+##############################################
+##GENERAL UTILS
 def get_phase(arr):
     phase=np.zeros_like(arr)
     for i in range(0,arr.shape[0],1):
         phase[i]=cmath.phase(arr[i])
     phase=np.real(phase)
     return(phase)
+##############################################
+#CHECK STUFF
 def check_directory(path):
     import os
     val=os.path.exists(str(path))
@@ -15,12 +19,35 @@ def check_directory(path):
         print("Directory exists!")
     else:
         return IOError("Given save_directory doesn't exist! Please choose another one")
-    
+
 def check_lenstype():
     if cf.mll_type!="flat" or cf.mll_type!="wedged":
         return IOError("Lens type not understood! Has to be flat or wedged")
-
-def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,i_scan):
+################################################
+#FOCUS FINDER
+def get_maxval(wave,i,f=cf.f,search_rad=cf.search_rad,stepsize=cf.slicevac):
+    i_f=int(cf.f/stepsize)
+    i_min=i_f-int(search_rad*i_f)
+    i_max=i_f+int(search_rad*i_f)
+    maxval=0
+    if i>i_min and i<i_max:
+        print("Looking for focus...")
+        wave=wave.astype("complex")
+        maxval=np.amax(np.abs(wave))
+    return(maxval)
+        
+    #This first version of the focus finder takes as an estimation the input focal lenght. After that, it looks around it with the radius search_rad(unitless: 0.1=10% of focal length value is the search zone).
+    #The slice with the highest peak intensity is the focal plane.This works good for a focus with high efficiency. If tilt angle is wrong, the focus might be mistaken
+    
+def post_process_focus(wave_focus):
+    px_max=np.argmax(np.abs(wave_focus))
+    central_pixel=round(wave_focus.shape[0]/2)
+    shift=int(central_pixel-px_max)
+    processed_wave=np.roll(wave_focus,shift)
+    return(processed_wave)
+####################################################
+#SAVE DATA
+def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focus,i_scan):
     if i_scan==0:
         print("Creating h5 file...")
         f=h5.File(cf.save_directory,"w")
@@ -33,10 +60,13 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,i_scan):
             data.create_dataset("pupil",data=data_pupil)
         if cf.save_ot_wave_end==True:
             data.create_dataset("data_end",data=data_end)
+        if cf.save_ot_focus==True:
+            data.create_dataset("data_focus",data=data_focus)
         #writing the log
         log=f.create_group("log")
         general=log.create_group("general")
         general.create_dataset("wavelength",data=cf.wavelength)
+        general.create_dataset("amplitude",data=cf.amplitude)
         general.create_dataset("N_px",data=cf.N_px)
         general.create_dataset("px_size",data=cf.pxsize)
         
@@ -130,6 +160,18 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,i_scan):
             big_data[-1,:]=data_end
             del f["/data/data_end"]
             folder.create_dataset("data_end",data=big_data)
+        if cf.save_ot_focus==True:
+            folder=f["data"]
+            data=f["data/data_focus"][:]
+            if i_scan==1:
+                small_data=data.reshape((1,data.shape[0]))
+            else:
+                small_data=data
+            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1]))
+            big_data[:-1,:]=small_data
+            big_data[-1,:]=data_focus
+            del f["/data/data_focus"]
+            folder.create_dataset("data_focus",data=big_data)
         f.close()
 ######################################
 #OLD FUNCTIONS

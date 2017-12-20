@@ -19,7 +19,7 @@ def mk_grating(N_layers,period,N_px=cf.N_px,offset_x=0,pxsize=cf.pxsize):
             else:
                 result_arr[i*N_px_layer:(i+1)*N_px_layer]=cf.delta_2+1j*cf.beta_2
     return(result_arr)
-def mk_plane_wave(theta,wavelength,N_px=cf.N_px,Amp=1,pxsize=cf.pxsize):
+def mk_plane_wave(theta,wavelength,N_px=cf.N_px,Amp=cf.amplitude,pxsize=cf.pxsize):
     #theta in rad
     kx=np.sin(theta)/wavelength
     x_arr=np.linspace(0,N_px*pxsize,N_px)

@@ -3,6 +3,7 @@ import numpy as np
 import mk_sample as mks
 import propagators as pr
 from math import ceil
+import utils as ut
 #mk incidend wave
 def mk_incident_wave(theta,wave_type=cf.incident_type):
     if wave_type=="plane":
@@ -113,7 +114,7 @@ def prop_single(input_wave,opt_const,stepvac=cf.stepvac):
 
 def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicevac,i_img=1,N_img=1):
     wave3=input_wave
-    modulo_img=round(N_slices_vac/cf.size_ff_arr[1])
+    modulo_img=ceil(N_slices_vac/cf.size_ff_arr[1])
     if modulo_img==0:
         modulo_img=1
     if cf.size_ff_arr[1]<N_slices_vac:
@@ -121,8 +122,14 @@ def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slic
     else:
         intensity_ff=np.zeros((cf.size_ff_arr[1],N_slices_vac))
     i2=0
+    maxval=cf.amplitude
     for i in range(N_slices_vac):
         wave3=pr.split_operator(wave3,opt_const=opt_const,step_size=step_size)
+        new_maxval=ut.get_maxval(wave=wave3,i=i)
+        if new_maxval>maxval:
+            wave_focus=wave3
+            i_f=i
+            maxval=new_maxval
         if i%modulo_img==0:
             wave_now=np.abs(wave3)
             modulo_bin=ceil(wave_now.shape[0]/cf.size_ff_arr[0])
@@ -137,4 +144,4 @@ def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slic
             i2+=1
         print("Img (%s/%s) Farfield slice %s of %s completed"%(i_img,N_img,i,N_slices_vac))
     output_wave=wave3
-    return(output_wave,intensity_ff)
+    return(output_wave,intensity_ff,wave_focus,i_f)
