@@ -3,13 +3,13 @@ import scipy.constants as sc
 #General experimental parameters
 energy=17.3 #energy in kev,if shifted_energy is NOne, this is the incident energy AND the energy that the lens is designed for. IF shifted_energy has a value, the incident beam has the energy shifted_energy
 
-f=0.0025 #geometrical focal length in meters
-scanmode="single" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
-save_directory="F:/Simulations/BPM_MLL/single/test_focfinder_omegatheta4.h5"#This is the filename how the data should be saved
+f=0.01 #geometrical focal length in meters
+scanmode="efficiency" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
+save_directory="F:/Simulations/BPM_MLL/single/test_focfinder_omegatheta5.h5"#This is the filename how the data should be saved
 #simulation parameters
 pxsize=0.2*10**-9 #px size in x direction in m
 stepsize_z=10*10**-9#stepsize in mll
-N_px=5*10**5
+N_px=1*10**6
 #---------------------------------------------
 #Incident wave
 incident_type="plane"#shape of the incident wave (right now only plane wave supported. For this enter "plane")
@@ -19,10 +19,10 @@ shifted_energy=None # If this is None, the incident wavelength is calculacted wi
 
 #---------------------------------------------
 #optical constants of multilayer materials
-delta_1=oc.delta_W_17_3
-beta_1=oc.beta_W_17_3
-delta_2=oc.delta_Si_17_3
-beta_2=oc.beta_Si_17_3
+delta_1=oc.delta_W_30
+beta_1=oc.beta_W_30
+delta_2=oc.delta_Si_30
+beta_2=oc.beta_Si_30
 #--------------------------
 
 #MLL
@@ -38,17 +38,17 @@ sigma_wedge=1
 #--------------------------
 #SLITS
 mk_slit=True #True if slit should be used
-slits_size=30*10**-6 #size in meters
+slits_size=60*10**-6 #size in meters
 slits_depth=100*10**-6
 slit_offset=17.5*10**-6
-slits_delta=oc.delta_W_17_3
-slits_beta=oc.beta_W_17_3
+slits_delta=delta_1
+slits_beta=beta_1
 slits_steps=100 #number of steps in slit
 #.............................................
 #Vacuum
 stepvac=1*10**-6#1 # distance if step is a single distance propagation
 N_slices_ff=1000 #farfield slices
-slicevac=0.5*10**-5 #distance of a single slice in vac if multiple slices are calculated
+slicevac=2*10**-5 #distance of a single slice in vac if multiple slices are calculated
 #---------------------
 #..................................................
 #######################################
@@ -64,22 +64,22 @@ size_intensity_arr=(2000,2000)
 size_ff_arr=(4000,4000)
 save_ot_inlens=False #This specifies if the intensity image inside the lens should be saved (both as npy file and as png)
 save_ot_afterlens=True #This specifies if the intensity image after the lens should be saved (both as npy file and as png)
-save_ot_wave=True #This specifies if the complex valued wave array at the exit pupil should be saved
+save_ot_wave=False #This specifies if the complex valued wave array at the exit pupil should be saved
 save_ot_wave_end=False #This specifies if the complex valued wave array at the end of the simulation
 save_ot_focus=True #This specifies if the focal plane wavefront should be saved
 #######################################
 #EFFICIENCY 
 #-------------------------------------
 #General parameters
-N_depth=30 #number of images taken (number of lens thickness values)
+N_depth=50 #number of images taken (number of lens thickness values)
 depth_start=1*10**-6 #start of efficiency scan in m
-depth_end=20*10**-6 #end of efficiency scan in m
+depth_end=30*10**-6 #end of efficiency scan in m
 
 #######################################
 #OMEGATHETA
 #--------------------------------------
 #General parameters
-N_theta=30 #number of images taken (number of theta values)
+N_theta=11 #number of images taken (number of theta values)
 theta_start=-0.005 #start of the theta scan in rad
 theta_end=0.005 #end of the theta scan in rad
 
