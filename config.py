@@ -1,14 +1,14 @@
 import optical_constants as oc
 import scipy.constants as sc
 #General experimental parameters
-energy=17.3 #energy in kev,if shifted_energy is NOne, this is the incident energy AND the energy that the lens is designed for. IF shifted_energy has a value, the incident beam has the energy shifted_energy
+energy=34.5 #energy in kev,if shifted_energy is NOne, this is the incident energy AND the energy that the lens is designed for. IF shifted_energy has a value, the incident beam has the energy shifted_energy
 
-f=0.01 #geometrical focal length in meters
-scanmode="efficiency" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
-save_directory="F:/Simulations/BPM_MLL/single/test_focfinder_omegatheta5.h5"#This is the filename how the data should be saved
+f=0.04 #geometrical focal length in meters
+scanmode="single" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
+save_directory="F:/Simulations/BPM_MLL/single/test_longvacprop.h5"#This is the filename how the data should be saved
 #simulation parameters
 pxsize=0.2*10**-9 #px size in x direction in m
-stepsize_z=10*10**-9#stepsize in mll
+stepsize_z=2*10**-9#stepsize in mll
 N_px=1*10**6
 #---------------------------------------------
 #Incident wave
@@ -29,7 +29,7 @@ beta_2=oc.beta_Si_30
 #number of layers in MLL
 mll_type="wedged" #choose "flat" or wedged
 n_begin=322 #first layer
-n_end=5822 #last layer
+n_end=8251 #last layer
 mll_depth=6*10**-6
 mll_offset=6*10**-6#0.0001-0.77*10**-5 #offset in meters
 sigma_flat=None # this is the sigma of the layers. None means the optical constants are like a rect function-> faster calculation!
@@ -38,16 +38,16 @@ sigma_wedge=1
 #--------------------------
 #SLITS
 mk_slit=True #True if slit should be used
-slits_size=60*10**-6 #size in meters
+slits_size=90*10**-6 #size in meters
 slits_depth=100*10**-6
-slit_offset=17.5*10**-6
+slit_offset=33*10**-6
 slits_delta=delta_1
 slits_beta=beta_1
 slits_steps=100 #number of steps in slit
 #.............................................
 #Vacuum
 stepvac=1*10**-6#1 # distance if step is a single distance propagation
-N_slices_ff=1000 #farfield slices
+N_slices_ff=2500 #farfield slices
 slicevac=2*10**-5 #distance of a single slice in vac if multiple slices are calculated
 #---------------------
 #..................................................
