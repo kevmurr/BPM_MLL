@@ -1,15 +1,15 @@
 import optical_constants as oc
 import scipy.constants as sc
 #General experimental parameters
-energy=34.5 #energy in kev,if shifted_energy is NOne, this is the incident energy AND the energy that the lens is designed for. IF shifted_energy has a value, the incident beam has the energy shifted_energy
+energy=17.3 #energy in kev,if shifted_energy is NOne, this is the incident energy AND the energy that the lens is designed for. IF shifted_energy has a value, the incident beam has the energy shifted_energy
 
-f=0.04 #geometrical focal length in meters
+f=0.01 #geometrical focal length in meters
 scanmode="single" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
-save_directory="F:/Simulations/BPM_MLL/single/test_longvacprop.h5"#This is the filename how the data should be saved
+save_directory="F:/Simulations/BPM_MLL/single/test_backwards.h5"#This is the filename how the data should be saved
 #simulation parameters
 pxsize=0.2*10**-9 #px size in x direction in m
-stepsize_z=2*10**-9#stepsize in mll
-N_px=1*10**6
+stepsize_z=10*10**-9#stepsize in mll
+N_px=2*10**6
 #---------------------------------------------
 #Incident wave
 incident_type="plane"#shape of the incident wave (right now only plane wave supported. For this enter "plane")
@@ -19,10 +19,10 @@ shifted_energy=None # If this is None, the incident wavelength is calculacted wi
 
 #---------------------------------------------
 #optical constants of multilayer materials
-delta_1=oc.delta_W_30
-beta_1=oc.beta_W_30
-delta_2=oc.delta_Si_30
-beta_2=oc.beta_Si_30
+delta_1=oc.delta_W_17_3
+beta_1=oc.beta_W_17_3
+delta_2=oc.delta_Si_17_3
+beta_2=oc.beta_Si_17_3
 #--------------------------
 
 #MLL
@@ -31,14 +31,15 @@ mll_type="wedged" #choose "flat" or wedged
 n_begin=322 #first layer
 n_end=8251 #last layer
 mll_depth=6*10**-6
-mll_offset=6*10**-6#0.0001-0.77*10**-5 #offset in meters
+mll_offset=10*10**-6#0.0001-0.77*10**-5 #offset in meters
 sigma_flat=None # this is the sigma of the layers. None means the optical constants are like a rect function-> faster calculation!
 sigma_wedge=1
+flip_mll=True# should the mll be flipped ? rotation axis orthogonal to optical axis. This is needed for full field simulation
 
 #--------------------------
 #SLITS
 mk_slit=True #True if slit should be used
-slits_size=90*10**-6 #size in meters
+slits_size=65*10**-6 #size in meters
 slits_depth=100*10**-6
 slit_offset=33*10**-6
 slits_delta=delta_1
@@ -47,7 +48,7 @@ slits_steps=100 #number of steps in slit
 #.............................................
 #Vacuum
 stepvac=1*10**-6#1 # distance if step is a single distance propagation
-N_slices_ff=2500 #farfield slices
+N_slices_ff=1000 #farfield slices
 slicevac=2*10**-5 #distance of a single slice in vac if multiple slices are calculated
 #---------------------
 #..................................................
@@ -64,7 +65,7 @@ size_intensity_arr=(2000,2000)
 size_ff_arr=(4000,4000)
 save_ot_inlens=False #This specifies if the intensity image inside the lens should be saved (both as npy file and as png)
 save_ot_afterlens=True #This specifies if the intensity image after the lens should be saved (both as npy file and as png)
-save_ot_wave=False #This specifies if the complex valued wave array at the exit pupil should be saved
+save_ot_wave=True #This specifies if the complex valued wave array at the exit pupil should be saved
 save_ot_wave_end=False #This specifies if the complex valued wave array at the end of the simulation
 save_ot_focus=True #This specifies if the focal plane wavefront should be saved
 #######################################

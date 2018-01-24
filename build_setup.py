@@ -88,7 +88,7 @@ def prop_mll_wedge(input_wave,N_steps_grat,step_size=cf.stepsize_z,i_img=1,N_img
         i2=0
         z=0
         for i1 in range(N_steps_grat):
-            grating=mks.mk_wedged_mll(z=z)
+            grating=mks.mk_wedged_mll(z=z,flip_mll=cf.flip_mll)
             z=z+step_size
             #print("z value is currently %s m" %z)
             wave=pr.split_operator(wave,wavelength=wavelength,opt_const=grating,step_size=step_size)
