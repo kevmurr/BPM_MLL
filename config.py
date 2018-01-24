@@ -5,7 +5,8 @@ energy=17.3 #energy in kev,if shifted_energy is NOne, this is the incident energ
 
 f=0.01 #geometrical focal length in meters
 scanmode="single" #This is very important. If "single" is chosen only a single shot is taken. "efficiency" does a scan of mll depth and measures the efficiency (not implemented yet) ."omegatheta" does an omegathetascan (not implemented yet). 
-save_directory="F:/Simulations/BPM_MLL/single/test_backwards.h5"#This is the filename how the data should be saved
+#save_directory="F:/Simulations/BPM_MLL/single/test_backwards.h5"#This is the filename how the data should be saved
+save_directory="/gpfs/cfel/cxi/scratch/user/murrayke/Simulations/mll_flipped_test.h5"
 #simulation parameters
 pxsize=0.2*10**-9 #px size in x direction in m
 stepsize_z=10*10**-9#stepsize in mll

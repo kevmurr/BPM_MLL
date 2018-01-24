@@ -78,7 +78,7 @@ def prop_mll_wedge(input_wave,N_steps_grat,step_size=cf.stepsize_z,i_img=1,N_img
     if cf.shifted_energy!=None:
         wavelength=cf.shifted_wavelength
     if mll_type=="wedged":
-        modulo_img=ceil(N_steps_grat/cf.size_intensity_arr[1])
+        modulo_img=int(ceil(N_steps_grat/cf.size_intensity_arr[1]))
         if modulo_img==0:
             modulo_img=1
         if cf.size_intensity_arr[1]<N_steps_grat:
@@ -114,7 +114,7 @@ def prop_single(input_wave,opt_const,stepvac=cf.stepvac):
 
 def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicevac,i_img=1,N_img=1):
     wave3=input_wave
-    modulo_img=ceil(N_slices_vac/cf.size_ff_arr[1])
+    modulo_img=int(ceil(N_slices_vac/cf.size_ff_arr[1]))
     if cf.size_ff_arr[1]<N_slices_vac:
         intensity_ff=np.zeros((cf.size_ff_arr[0],cf.size_ff_arr[1]))
     else:
@@ -130,7 +130,7 @@ def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slic
             maxval=new_maxval
         if i%modulo_img==0:
             wave_now=np.abs(wave3)
-            modulo_bin=ceil(wave_now.shape[0]/cf.size_ff_arr[0])
+            modulo_bin=int(ceil(wave_now.shape[0]/cf.size_ff_arr[0]))
             #now binning down
             i3=0
             wave_bin=np.zeros((cf.size_ff_arr[0]))
