@@ -115,6 +115,8 @@ def prop_single(input_wave,opt_const,stepvac=cf.stepvac):
 def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicevac,i_img=1,N_img=1):
     wave3=input_wave
     modulo_img=int(ceil(N_slices_vac/cf.size_ff_arr[1]))
+    if modulo_img==0:
+        modulo_img=1
     if cf.size_ff_arr[1]<N_slices_vac:
         intensity_ff=np.zeros((cf.size_ff_arr[0],cf.size_ff_arr[1]))
     else:
