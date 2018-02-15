@@ -66,7 +66,9 @@ if cf.scanmode=="single" or cf.scanmode=="Single" or cf.scanmode=="s":
     wave_end=freespace_prop_result[0]
     intensity_after_mll=freespace_prop_result[1]
     wave_focus=freespace_prop_result[2]
-    ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=0)
+    if cf.save_directory!=None:
+        print("Saving...")
+        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=0)
     print("")
     print("The incident wave is ""wave00""")
     print("Wave at entry of lens is ""wave1""")
@@ -145,8 +147,9 @@ if cf.scanmode=="efficiency" or cf.scanmode=="Efficiency" or cf.scanmode=="e":
         wave_focus=freespace_prop_result[2]
         #Saving stuff
         print("The detected focal plane is in slice %s which is %s mm from the MLL."%(freespace_prop_result[3],1000*freespace_prop_result[3]*cf.slicevac))
-        print("Saving...")
-        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=i_depth)
+        if cf.save_directory!=None:
+            print("Saving...")
+            ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=i_depth)
     print("Finished run.")
     
 ##################################################
@@ -217,7 +220,8 @@ if cf.scanmode=="omegatheta" or cf.scanmode=="Omegatheta" or cf.scanmode=="o":
         intensity_after_mll=freespace_prop_result[1]
         wave_focus=freespace_prop_result[2]
         #Saving stuff
-        print("The detected focal plane is in slice %s which is %s mm from the MLL."%(freespace_prop_result[3],1000*freespace_prop_result[3]*cf.slicevac))
-        print("Saving...")
-        ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=i_theta)
+        print("The detected focal plane is in slice %s which is %s mm from the MLL."%(freespace_prop_result[3],1000*freespace_prop_result[3]*cf.slicevac))    
+        if cf.save_directory!=None:
+            print("Saving...")
+            ut.save_data(data_int_in_lens=intensity_in_mll,data_int_after_lens=intensity_after_mll,data_pupil=wave,data_end=wave_end,data_focus=wave_focus,i_scan=i_theta)
     print("Finished run.")
