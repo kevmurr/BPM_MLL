@@ -65,3 +65,4 @@ def mk_wedged_mll(z=0,sigma=None,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,offset=cf.
         shift_px=int(offset/pxsize)
         complex_array=np.roll(complex_array,shift_px)
     return(complex_array)
+x=mk_slit()
