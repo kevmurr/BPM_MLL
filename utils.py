@@ -86,7 +86,8 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focu
         if cf.mll_type=="flat":
             mll.create_dataset("sigma",data=cf.sigma_flat)
         if cf.mll_type=="wedged":
-            mll.create_dataset("sigma",data=cf.sigma_wedge)
+            if cf.sigma_wedge!=None:
+                mll.create_dataset("sigma",data=cf.sigma_wedge)
         mll.create_dataset("n_start",data=cf.n_begin)
         mll.create_dataset("n_end",data=cf.n_end)
         mll.create_dataset("delta1",data=cf.delta_1)
