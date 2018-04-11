@@ -47,7 +47,7 @@ def post_process_focus(wave_focus):
     return(processed_wave)
 ####################################################
 #SAVE DATA
-def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focus,i_scan):
+def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focus,int_before_lens,i_scan):
     if i_scan==0:
         print("Creating h5 file...")
         f=h5.File(cf.save_directory,"w")
@@ -62,6 +62,8 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focu
             data.create_dataset("data_end",data=data_end)
         if cf.save_ot_focus==True:
             data.create_dataset("data_focus",data=data_focus)
+        if cf.save_ot_beforelens==True:
+            data.create_dataset("int_before_lens",data=int_before_lens)
         #writing the log
         log=f.create_group("log")
         general=log.create_group("general")
@@ -173,6 +175,18 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focu
             big_data[-1,:]=data_focus
             del f["/data/data_focus"]
             folder.create_dataset("data_focus",data=big_data)
+        if cf.save_ot_beforelens==True:
+            folder=f["data"]
+            data=f["data/int_before_lens"][:]
+            if i_scan==1:
+                small_data=data.reshape((1,data.shape[0],data.shape[1]))
+            else:
+                small_data=data
+            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1],small_data.shape[2]))
+            big_data[:-1,:,:]=small_data
+            big_data[-1,:,:]=int_before_lens
+            del f["/data/int_before_lens"]
+            folder.create_dataset("int_before_lens",data=big_data)
         f.close()
 ######################################
 #OLD FUNCTIONS

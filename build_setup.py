@@ -112,8 +112,9 @@ def prop_single(input_wave,opt_const,stepvac=cf.stepvac):
      output_wave=pr.split_operator(input_wave,opt_const=opt_const,step_size=stepvac)
      return(output_wave)
 
-def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicevac,i_img=1,N_img=1):
+def prop_ff(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicevac,i_img=1,N_img=1):
     wave3=input_wave
+    ####farfield stuff####
     modulo_img=int(ceil(N_slices_vac/cf.size_ff_arr[1]))
     if modulo_img==0:
         modulo_img=1
@@ -145,3 +146,32 @@ def prop_bulk(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slic
         print("Img (%s/%s) Farfield slice %s of %s completed"%(i_img,N_img,i,N_slices_vac))
     output_wave=wave3
     return(output_wave,intensity_ff,wave_focus,i_f)
+
+def prop_bf(input_wave,opt_const,N_slices_vac=cf.N_slices_bf,step_size=cf.slicevac,i_img=1,N_img=1):
+    wave3=input_wave
+    ####farfield stuff####
+    modulo_img=int(ceil(N_slices_vac/cf.size_ff_arr[1]))
+    if modulo_img==0:
+        modulo_img=1
+    if cf.size_ff_arr[1]<N_slices_vac:
+        intensity_ff=np.zeros((cf.size_ff_arr[0],cf.size_ff_arr[1]))
+    else:
+        intensity_ff=np.zeros((cf.size_ff_arr[0],N_slices_vac))
+    i2=0
+    for i in range(N_slices_vac):
+        wave3=pr.split_operator(wave3,opt_const=opt_const,step_size=step_size)
+        if i%modulo_img==0:
+            wave_now=np.abs(wave3)
+            modulo_bin=int(ceil(wave_now.shape[0]/cf.size_ff_arr[0]))
+            #now binning down
+            i3=0
+            wave_bin=np.zeros((cf.size_ff_arr[0]))
+            for i1 in range(0,wave_now.shape[0],1):
+                if i1%modulo_bin==0:
+                    wave_bin[i3]=wave_now[i1]
+                    i3+=1   
+            intensity_ff[:,i2]=wave_bin
+            i2+=1
+        print("Img (%s/%s) Slice before lens %s of %s completed"%(i_img,N_img,i,N_slices_vac))
+    output_wave=wave3
+    return(output_wave,intensity_ff)
