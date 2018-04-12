@@ -116,13 +116,14 @@ def prop_ff(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicev
     wave3=input_wave
     ####farfield stuff####
 #    modulo_img=int(ceil(N_slices_vac/cf.size_ff_arr[1]))
-    img_index_arr=np.linspace(0,N_slices_vac,cf.size_ff_arr[1]).astype(int)
+
 #    if modulo_img==0:
 #        modulo_img=1
     if cf.size_ff_arr[1]<N_slices_vac:
         intensity_ff=np.zeros((cf.size_ff_arr[0],cf.size_ff_arr[1]))
     else:
         intensity_ff=np.zeros((cf.size_ff_arr[0],N_slices_vac))
+    img_index_arr=np.linspace(0,N_slices_vac,intensity_ff.shape[1]).astype(int)
     i2=0
     maxval=cf.amplitude
     for i in range(N_slices_vac):
