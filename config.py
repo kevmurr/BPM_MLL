@@ -51,9 +51,9 @@ slits_steps=100 #number of steps in slit
 #.............................................
 #Vacuum
 stepvac=1*10**-6#1 # distance if step is a single distance propagation
-N_slices_ff=2000 #farfield slices after lens.
+N_slices_ff=200 #farfield slices after lens.
 N_slices_bf=0 #slices before lens (possibly 0 if no special data is needed there)
-slicevac=1.5*10**-5 #distance of a single slice in vac in ff or before the mll
+slicevac=15*10**-5 #distance of a single slice in vac in ff or before the mll
 #---------------------
 #..................................................
 #######################################
@@ -71,8 +71,9 @@ size_ff_arr=(4000,4000) #this is the size for the far field arr and for the arr 
 save_ot_beforelens=False #This specifies if the intensity before the lens and after slitting should be saved.
 save_ot_inlens=False #This specifies if the intensity image inside the lens should be saved 
 save_ot_afterlens=False #This specifies if the intensity image after the lens should be saved 
+save_ot_afterlens_lastcol=True #This specifies if the last row of the intensity image after the lens should be saved 
 save_ot_wave=False #This specifies if the complex valued wave array at the exit pupil should be saved
-save_ot_wave_end=True #This specifies if the complex valued wave array at the end of the simulation
+save_ot_wave_end=False #This specifies if the complex valued wave array at the end of the simulation
 save_ot_focus=False #This specifies if the focal plane wavefront should be saved
 #######################################
 #EFFICIENCY 

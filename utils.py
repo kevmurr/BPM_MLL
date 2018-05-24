@@ -56,6 +56,8 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focu
             data.create_dataset("int_in_lens",data=data_int_in_lens)
         if cf.save_ot_afterlens==True:
             data.create_dataset("int_after_lens",data=data_int_after_lens)
+        if cf.save_ot_afterlens_lastcol==True:
+            data.create_dataset("int_after_lens_lastcol",data=data_int_after_lens[:,-1])
         if cf.save_ot_wave==True:
             data.create_dataset("pupil",data=data_pupil)
         if cf.save_ot_wave_end==True:
@@ -139,6 +141,18 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focu
             big_data[-1,:,:]=data_int_after_lens
             del f["/data/int_after_lens"]
             folder.create_dataset("int_after_lens",data=big_data)
+        if cf.save_ot_afterlens_lastcol==True:
+            folder=f["data"]
+            data=f["data/int_after_lens_lastcol"][:]
+            if i_scan==1:
+                small_data=data.reshape((1,data.shape[0]))
+            else:
+                small_data=data
+            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1]))
+            big_data[:-1,:,:]=small_data
+            big_data[-1,:,:]=data_int_after_lens[:,-1]
+            del f["/data/int_after_lens_lastcol"]
+            folder.create_dataset("int_after_lens_lastcol",data=big_data)
         if cf.save_ot_wave==True:
             folder=f["data"]
             data=f["data/pupil"][:]
