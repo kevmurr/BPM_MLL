@@ -148,7 +148,7 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focu
                 small_data=data.reshape((1,data.shape[0]))
             else:
                 small_data=data
-            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1]))
+            big_data=np.zeros((small_data.shape[0]+1,small_data.shape[1])).astype("float")
             big_data[:-1,:]=small_data
             big_data[-1,:]=data_int_after_lens[:,-1]
             del f["/data/int_after_lens_lastcol"]

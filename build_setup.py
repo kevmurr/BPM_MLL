@@ -126,7 +126,7 @@ def prop_ff(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicev
     img_index_arr=np.linspace(0,N_slices_vac,intensity_ff.shape[1]).astype(int)
     i2=0
     maxval=cf.amplitude
-    for i in range(N_slices_vac):
+    for i in range(0,N_slices_vac+1,1):
         wave3=pr.split_operator(wave3,opt_const=opt_const,step_size=step_size)
         new_maxval=ut.get_maxval(wave=wave3,i=i)
         if new_maxval>maxval:
