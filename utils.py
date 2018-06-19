@@ -30,11 +30,14 @@ def get_maxval(wave,i,f=cf.f,search_rad=cf.search_rad,stepsize=cf.slicevac):
     i_min=i_f-int(search_rad*i_f)
     i_max=i_f+int(search_rad*i_f)
     maxval=0
+    first_look=False
+    if i==i_min:
+        first_look=True
     if i>i_min and i<i_max:
         print("Looking for focus...")
         wave=wave.astype("complex")
         maxval=np.amax(np.abs(wave))
-    return(maxval)
+    return(maxval,first_look)
         
     #This first version of the focus finder takes as an estimation the input focal lenght. After that, it looks around it with the radius search_rad(unitless: 0.1=10% of focal length value is the search zone).
     #The slice with the highest peak intensity is the focal plane.This works good for a focus with high efficiency. If tilt angle is wrong, the focus might be mistaken

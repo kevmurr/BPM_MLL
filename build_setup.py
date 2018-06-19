@@ -128,7 +128,12 @@ def prop_ff(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicev
     maxval=cf.amplitude
     for i in range(0,N_slices_vac+1,1):
         wave3=pr.split_operator(wave3,opt_const=opt_const,step_size=step_size)
-        new_maxval=ut.get_maxval(wave=wave3,i=i)
+        maxval_results=ut.get_maxval(wave=wave3,i=i)
+        new_maxval=maxval_results[0]
+        if maxval_results[1]==True:
+            wave_focus=wave3
+        
+        
         if new_maxval>maxval:
             wave_focus=wave3
             i_f=i
