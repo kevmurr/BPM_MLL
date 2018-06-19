@@ -132,6 +132,7 @@ def prop_ff(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicev
         new_maxval=maxval_results[0]
         if maxval_results[1]==True:
             wave_focus=wave3
+            i_f=i
         
         
         if new_maxval>maxval:
