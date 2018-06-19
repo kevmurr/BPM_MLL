@@ -33,6 +33,9 @@ def split_operator(input_wave,opt_const,step_size,wavelength=cf.wavelength,px_si
     kx=np.fft.fftfreq(input_wave.size)/(px_size)
     kz=np.sqrt(np.subtract(np.square(k0),np.square(kx)))
     refr=np.fft.fft(np.multiply(input_wave,np.exp(1j*opt_const*k0*step_size )))
-    output_wave=np.fft.ifft(np.multiply(refr,np.exp(-1j*k0*step_size*np.sqrt(1-wavelength**2*np.square(kz)))))
+    output_wave=np.fft.ifft(np.multiply(refr,np.exp(-1j*k0*step_size*np.sqrt(1-wavelength**2*np.square(kx)))))
     #output_wave=np.fft.ifft(np.multiply(refr,np.exp(-1j*kz*step_size)))
     return(output_wave)
+
+#x=np.zeros((100000)).astype("complex")
+#print(split_operator(input_wave=x,opt_const=x,step_size=0.001))
