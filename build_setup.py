@@ -57,7 +57,7 @@ def prop_mll_flat(input_wave,opt_const,N_steps_grat,step_size=cf.stepsize_z,i_im
         for i1 in range(N_steps_grat):
             wave=pr.split_operator(wave,wavelength=wavelength,opt_const=grating,step_size=step_size)
             if i1%modulo_img==0:
-                wave_now=np.abs(wave)
+                wave_now=np.abs(wave)**2
                 modulo_bin=ceil(wave_now.shape[0]/cf.size_intensity_arr[0])
                 #now binning down
                 i3=0
@@ -93,7 +93,7 @@ def prop_mll_wedge(input_wave,N_steps_grat,step_size=cf.stepsize_z,i_img=1,N_img
             #print("z value is currently %s m" %z)
             wave=pr.split_operator(wave,wavelength=wavelength,opt_const=grating,step_size=step_size)
             if i1%modulo_img==0:
-                wave_now=np.abs(wave)
+                wave_now=np.abs(wave)**2
                 modulo_bin=ceil(wave_now.shape[0]/cf.size_intensity_arr[0])
                 #now binning down
                 i3=0
@@ -138,7 +138,7 @@ def prop_ff(input_wave,opt_const,N_slices_vac=cf.N_slices_ff,step_size=cf.slicev
             i_f=i
             maxval=new_maxval
         if i in img_index_arr:
-            wave_now=np.abs(wave3)
+            wave_now=np.abs(wave3)**2
             modulo_bin=int(ceil(wave_now.shape[0]/cf.size_ff_arr[0]))
             #now binning down
             i3=0
@@ -167,7 +167,7 @@ def prop_bf(input_wave,opt_const,N_slices_vac=cf.N_slices_bf,step_size=cf.slicev
     for i in range(N_slices_vac):
         wave3=pr.split_operator(wave3,opt_const=opt_const,step_size=step_size)
         if i%modulo_img==0:
-            wave_now=np.abs(wave3)
+            wave_now=np.abs(wave3)**2
             modulo_bin=int(ceil(wave_now.shape[0]/cf.size_ff_arr[0]))
             #now binning down
             i3=0

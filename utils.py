@@ -36,7 +36,7 @@ def get_maxval(wave,i,f=cf.f,search_rad=cf.search_rad,stepsize=cf.slicevac):
     if i>i_min and i<i_max:
         print("Looking for focus...")
         wave=wave.astype("complex")
-        maxval=np.amax(np.abs(wave))
+        maxval=np.amax(np.abs(wave)**2)
     return(maxval,first_look)
         
     #This first version of the focus finder takes as an estimation the input focal lenght. After that, it looks around it with the radius search_rad(unitless: 0.1=10% of focal length value is the search zone).
@@ -91,7 +91,8 @@ def save_data(data_int_in_lens,data_int_after_lens,data_pupil,data_end,data_focu
         mll.create_dataset("mll_offset",data=cf.mll_offset)
         mll.create_dataset("mll_type",data=str(cf.mll_type))
         if cf.mll_type=="flat":
-            mll.create_dataset("sigma",data=cf.sigma_flat)
+            if cf.sigma_flat!=None:
+                mll.create_dataset("sigma",data=cf.sigma_flat)
         if cf.mll_type=="wedged":
             if cf.sigma_wedge!=None:
                 mll.create_dataset("sigma",data=cf.sigma_wedge)

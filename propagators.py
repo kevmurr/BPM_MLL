@@ -1,7 +1,7 @@
 import numpy as np
 import config as cf
 wavelength=cf.wavelength
-def split_operator_old(input_wave,opt_const,step_size,wavelength=cf.wavelength,px_size=cf.pxsize):
+def split_operator(input_wave,opt_const,step_size,wavelength=cf.wavelength,px_size=cf.pxsize):
     #this is a split operator beam propagation method according to robert r mcleod
     k0=2*np.pi/(wavelength)
     #for now i will normaize the fft of the sample and multiply with k0 to get kx
@@ -9,7 +9,7 @@ def split_operator_old(input_wave,opt_const,step_size,wavelength=cf.wavelength,p
     opt_const=opt_const.astype("complex")
     kx=np.fft.fftfreq(input_wave.size)/(px_size)
     kz=np.sqrt(np.subtract(np.square(k0),np.square(kx)))
-    refr=np.fft.fft(np.multiply(input_wave,np.exp(1j*(np.real(opt_const)+1j*2*np.imag(opt_const))*k0*step_size )))
+    refr=np.fft.fft(np.multiply(input_wave,np.exp(1j*(np.real(opt_const)+1j*np.imag(opt_const))*k0*step_size )))
     output_wave=np.fft.ifft(np.multiply(refr,np.exp(-1j*np.pi*wavelength*step_size*np.square(kz))))
     #output_wave=np.fft.ifft(np.multiply(refr,np.exp(-1j*kz*step_size)))
     return(output_wave)
@@ -24,7 +24,7 @@ def split_operator_andr(input_wave,opt_const,step_size,px_size=cf.pxsize):
     G1=np.multiply(np.fft.fftshift(np.fft.fft(input_wave)),np.exp(1j*p*dx))
     U1=np.multiply(np.fft.ifft(np.fft.ifftshift(G1)),np.exp(1j*dx*opt_const/2))
     return(U1)
-def split_operator(input_wave,opt_const,step_size,wavelength=cf.wavelength,px_size=cf.pxsize):
+def split_operator_test(input_wave,opt_const,step_size,wavelength=cf.wavelength,px_size=cf.pxsize):
     #this is a split operator beam propagation method according to robert r mcleod
     k0=2*np.pi/(wavelength)
     #for now i will normaize the fft of the sample and multiply with k0 to get kx

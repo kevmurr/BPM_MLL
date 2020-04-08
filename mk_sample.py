@@ -43,14 +43,14 @@ def mk_slit(size=cf.slits_size,delta=cf.slits_delta,beta=cf.slits_beta,offset=cf
     return(slit)
 
 
-def mk_wedged_mll(z=0,sigma=None,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,offset=cf.mll_offset,wavelength=cf.wavelength,n_begin=cf.n_begin,n_end=cf.n_end,delta_1=cf.delta_1,delta_2=cf.delta_2,beta_1=cf.beta_1,beta_2=cf.beta_2,flip_mll=False,gamma=cf.gamma):
+def mk_wedged_mll(z=0,sigma=cf.sigma_wedge,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,offset=cf.mll_offset,wavelength=cf.wavelength,n_begin=cf.n_begin,n_end=cf.n_end,delta_1=cf.delta_1,delta_2=cf.delta_2,beta_1=cf.beta_1,beta_2=cf.beta_2,flip_mll=False,gamma=cf.gamma):
     if flip_mll==True:
         z=cf.mll_depth-z
     r=np.arange(0,N_px*pxsize,pxsize)
-    stretch=(1-z/(2*f))
-    t_array=2*np.pi*(np.sqrt(f**2*wavelength**2+wavelength**2*np.square(r/stretch))-f*wavelength)/wavelength**2
+    t_array=np.pi*4*f*np.square(r)/(wavelength*(2*f-z)**2)
     rect=square(t_array,duty=gamma+0.05)
     if sigma!=None:
+        print("Using sigma",sigma)
         rect=gaussian_filter(rect,sigma=sigma)
     xmin=wedged_mll_x(n_layer=n_begin,focallength=f,z=z,wavelength=cf.wavelength)
     xmax=wedged_mll_x(n_layer=n_end,focallength=f,z=z,wavelength=cf.wavelength)
@@ -65,4 +65,4 @@ def mk_wedged_mll(z=0,sigma=None,N_px=cf.N_px,pxsize=cf.pxsize,f=cf.f,offset=cf.
         shift_px=int(offset/pxsize)
         complex_array=np.roll(complex_array,shift_px)
     return(complex_array)
-x=mk_wedged_mll()
+

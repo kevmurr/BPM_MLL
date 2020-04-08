@@ -54,3 +54,4 @@ for i in range(0,10,1):
 ax1.set_autoscaley_on(False)
 ax1.set_ylim([0,cf.slit_offset+cf.slits_size+y_arr[-1]-(cf.slit_offset+cf.slits_size)])
 ax1.set_xlim([0,x_maxmll*1.1])
+plt.show()
